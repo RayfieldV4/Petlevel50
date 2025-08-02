@@ -1,109 +1,53 @@
--- Prank Pet Mutation GUI by ChatGPT
+-- Grow a Garden Visual Prank GUI (Local only)
 local Players = game:GetService("Players")
 local player = Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+local gui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+gui.Name = "PetMutationPrank"
+gui.ResetOnSpawn = false
 
-local screenGui = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
-screenGui.Name = "FakePetMutator"
-screenGui.ResetOnSpawn = false
-
-local frame = Instance.new("Frame", screenGui)
-frame.Size = UDim2.new(0, 250, 0, 140)
-frame.Position = UDim2.new(0.4, 0, 0.4, 0)
-frame.BackgroundColor3 = Color3.fromRGB(0, 128, 128)
-frame.BackgroundTransparency = 0.1
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 280, 0, 200)
+frame.Position = UDim2.new(0.35, 0, 0.4, 0)
+frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
 frame.BorderSizePixel = 0
-frame.Active = true
-frame.Draggable = true
+frame.Parent = gui
 Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 12)
 
 local title = Instance.new("TextLabel", frame)
-title.Text = "🧬 Pet Age Mutator v1.0"
-title.Font = Enum.Font.FredokaOne
-title.TextSize = 18
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.BackgroundTransparency = 1
+title.Text = "🌱 Grow a Garden XP Hub"
 title.Size = UDim2.new(1, 0, 0, 30)
-title.Position = UDim2.new(0, 0, 0, 0)
+title.Position = UDim2.new(0, 0, 0, 5)
+title.TextColor3 = Color3.new(1, 1, 1)
+title.BackgroundTransparency = 1
+title.Font = Enum.Font.FredokaOne
+title.TextSize = 20
 
-local petInfo = Instance.new("TextLabel", frame)
-petInfo.Text = "Equipped Pet: [None]"
-petInfo.Font = Enum.Font.Gotham
-petInfo.TextSize = 16
-petInfo.TextColor3 = Color3.fromRGB(255, 255, 150)
-petInfo.BackgroundTransparency = 1
-petInfo.Position = UDim2.new(0, 0, 0, 30)
-petInfo.Size = UDim2.new(1, 0, 0, 25)
-petInfo.TextScaled = true
-petInfo.TextWrapped = true
+local status = Instance.new("TextLabel", frame)
+status.Text = "🧬 Pet Mutation: Lvl 50 Achieved"
+status.Size = UDim2.new(1, -20, 0, 30)
+status.Position = UDim2.new(0, 10, 0, 40)
+status.TextColor3 = Color3.fromRGB(150, 255, 150)
+status.BackgroundTransparency = 1
+status.Font = Enum.Font.Gotham
+status.TextSize = 16
 
--- Find equipped pet
-local function getEquippedPetTool()
-    character = player.Character or player.CharacterAdded:Wait()
-    for _, child in pairs(character:GetChildren()) do
-        if child:IsA("Tool") and child.Name:find("Age") then
-            return child
-        end
-    end
-    return nil
-end
+local log = Instance.new("TextLabel", frame)
+log.Text = "🌸 Moon Blossom XP\n🐣 Spawning Random Pets\n🎁 Auto Harvesting..."
+log.Size = UDim2.new(1, -20, 0, 80)
+log.Position = UDim2.new(0, 10, 0, 80)
+log.TextColor3 = Color3.fromRGB(255, 255, 160)
+log.BackgroundTransparency = 1
+log.Font = Enum.Font.GothamSemibold
+log.TextSize = 14
+log.TextWrapped = true
 
--- Update GUI with pet name
-local function updateGUI()
-    local pet = getEquippedPetTool()
-    if pet then
-        petInfo.Text = "Equipped Pet: " .. pet.Name
-    else
-        petInfo.Text = "Equipped Pet: [None]"
-    end
-end
+local footer = Instance.new("TextLabel", frame)
+footer.Text = "🔁 Visual Only • Prank Script"
+footer.Size = UDim2.new(1, -20, 0, 20)
+footer.Position = UDim2.new(0, 10, 0, 170)
+footer.TextColor3 = Color3.fromRGB(200, 200, 255)
+footer.BackgroundTransparency = 1
+footer.Font = Enum.Font.Gotham
+footer.TextSize = 12
 
-updateGUI()
-
--- Create styled button
-local function createStyledButton(text, yPos, color)
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(0.9, 0, 0, 35)
-    btn.Position = UDim2.new(0.05, 0, 0, yPos)
-    btn.BackgroundColor3 = color
-    btn.Text = text
-    btn.Font = Enum.Font.FredokaOne
-    btn.TextSize = 16
-    btn.TextColor3 = Color3.new(1, 1, 1)
-    btn.AutoButtonColor = false
-
-    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
-    local stroke = Instance.new("UIStroke", btn)
-    stroke.Color = Color3.fromRGB(0, 0, 0)
-    stroke.Thickness = 1.2
-
-    btn.MouseEnter:Connect(function()
-        btn.BackgroundColor3 = color:lerp(Color3.new(1,1,1), 0.2)
-    end)
-    btn.MouseLeave:Connect(function()
-        btn.BackgroundColor3 = color
-    end)
-
-    btn.Parent = frame
-    return btn
-end
-
--- Create fake button
-local button = createStyledButton("Set Age to 50", 70, Color3.fromRGB(0, 170, 255))
-
-button.MouseButton1Click:Connect(function()
-    local tool = getEquippedPetTool()
-    if tool then
-        for i = 5, 1, -1 do
-            button.Text = "Mutating... " .. i
-            wait(1)
-        end
-        tool.Name = "Pet [Age 50]"
-        updateGUI()
-        button.Text = "Set Age to 50 ✔️"
-    else
-        button.Text = "No Pet Equipped!"
-        wait(2)
-        button.Text = "Set Age to 50"
-    end
-end)
+print("✅ Grow a Garden prank GUI loaded (visual only)")
