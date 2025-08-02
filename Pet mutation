@@ -1,0 +1,37 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Replace these with actual remote names from RemoteSpy if needed
+local mutateRemote = ReplicatedStorage:WaitForChild("MutatePet")
+local setAgeRemote = ReplicatedStorage:WaitForChild("SetPetAge")
+
+local function getEquippedPet()
+    return player:WaitForChild("PetInventory"):FindFirstChild("EquippedPet").Value
+end
+
+local function mutatePet(pet)
+    if mutateRemote and pet then
+        mutateRemote:FireServer(pet)
+        print("[✅] Mutation triggered on:", pet.Name)
+    end
+end
+
+local function setPetAge(pet, age)
+    if setAgeRemote and pet then
+        setAgeRemote:FireServer(pet, age)
+        print("[⚡] Set", pet.Name, "to age:", age)
+    end
+end
+
+spawn(function()
+    while wait(5) do
+        local pet = getEquippedPet()
+        if pet then
+            setPetAge(pet, 50)
+            mutatePet(pet)
+        else
+            warn("No pet equipped!")
+        end
+    end
+end)
